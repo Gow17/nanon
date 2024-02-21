@@ -3,7 +3,7 @@
 # Source code asli >> NIXPOIN.COM
 #
 echo "Pilih titit yang ingin di install"
-echo "	1) Windows 2012 Server (Default)"
+echo "	1) Windows !1 (Default)"
 echo "	2) Windows 2012 R2"
 echo "	3) Windows 2016"
 echo "	4) Windows 2019"
@@ -13,7 +13,7 @@ echo "	6) Pakai link gz mu sendiri"
 read -p "Pilih [1]: " PILIHOS
 
 case "$PILIHOS" in
-	1|"") PILIHOS="http://mirror.softaculous.com/virtualizor/templates/windows-2012server.img.gz";;
+	1|"") PILIHOS="https://archive.org/download/windows11-tiny11-cloudvm/win_11.gz";;
 	2) PILIHOS="http://mirror.softaculous.com/virtualizor/templates/windows-2012r2.img.gz";;
 	3) PILIHOS="http://mirror.softaculous.com/virtualizor/templates/windows-2016.img.gz";;
 	4) PILIHOS="http://mirror.softaculous.com/virtualizor/templates/windows-2019.img.gz";;
@@ -54,7 +54,7 @@ EOF
 cat >/tmp/dpart.bat<<EOF
 @ECHO OFF
 echo JENDELA INI JANGAN DITUTUP
-echo SCRIPT INI AKAN MERUBAH PORT RDP MENJADI 22, SETELAH RESTART UNTUK MENYAMBUNG KE RDP GUNAKAN ALAMAT $IP4:22
+echo SCRIPT INI AKAN MERUBAH PORT RDP MENJADI 5000, SETELAH RESTART UNTUK MENYAMBUNG KE RDP GUNAKAN ALAMAT $IP4:5000
 echo KETIK YES LALU ENTER!
 
 cd.>%windir%\GetAdmin
@@ -64,7 +64,7 @@ echo CreateObject^("Shell.Application"^).ShellExecute "%~s0", "%*", "", "runas",
 del /f /q "%temp%\Admin.vbs"
 exit /b 2)
 
-set PORT=22
+set PORT=5000
 set RULE_NAME="Open Port %PORT%"
 
 netsh advfirewall firewall show rule name=%RULE_NAME% >nul
@@ -76,7 +76,7 @@ if not ERRORLEVEL 1 (
     netsh advfirewall firewall add rule name=%RULE_NAME% dir=in action=allow protocol=TCP localport=%PORT%
 )
 
-reg add "HKLM\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD /d 22
+reg add "HKLM\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" /v PortNumber /t REG_DWORD /d 5000
 
 ECHO SELECT VOLUME=%%SystemDrive%% > "%SystemDrive%\diskpart.extend"
 ECHO EXTEND >> "%SystemDrive%\diskpart.extend"
@@ -91,7 +91,7 @@ echo JENDELA INI JANGAN DITUTUP
 exit
 EOF
 
-wget --no-check-certificate -O- $PILIHOS | gunzip | dd of=/dev/vda bs=3M status=progress
+wget --no-check-certificate -O- $PILIHOS | gunzip | dd of=/dev/vda1 bs=3M status=progress
 
 mount.ntfs-3g /dev/vda2 /mnt
 cd "/mnt/ProgramData/Microsoft/Windows/Start Menu/Programs/"
